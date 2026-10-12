@@ -1,0 +1,7 @@
+# Only the CAPTURE stage needs a third-party package.
+# The vision call and the report writing use the Python standard library.
+
+playwright>=1.40
+
+# After installing, fetch the browser binary once:
+#     playwright install chromium

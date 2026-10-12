@@ -1,0 +1,32 @@
+# Generated output -----------------------------------------------------------
+
+# The market picture is a "latest state" file, rewritten on every call.
+logs/
+
+# Generated reports and screenshots. The two demo artifacts that the README
+# refers to (reports/edge-test.png, reports/real-vision-test.txt) are tracked.
+reports/heatmap-*.png
+reports/heatmap-report-*.txt
+
+# Test scratch -----------------------------------------------------------------
+tests/*.jsonl
+tests/*.log
+tests/*.err
+
+# Python -----------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+.uv-cache/
+.uv-python/
+
+# Browser scaffolding (only needed by the playwright capture engine) -----------
+.browsers/
+.edge-profile/
+.browser-profile/
+
+# Editors / OS -----------------------------------------------------------------
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

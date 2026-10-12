@@ -1,0 +1,110 @@
+TRADINGVIEW HEAT MAP - VISION REPORT
+========================================================================
+generated      : 2026-10-12T22:25:49+11:00
+local timezone : AUS Eastern Daylight Time
+source url     : https://www.tradingview.com/heatmap/stock/
+model server   : http://127.0.0.1:8080/v1
+model id       : qwen3.8-flash-next-iq3_s
+
+1. CAPTURE
+========================================================================
+screenshot : reports\edge-test.png
+size       : 829 KB
+viewport   : 1920x1080 @ 2.0x scale
+
+2. VISION MODEL READ
+========================================================================
+!! Model-generated. This is an interpretation of a picture, not data.
+!! Treat every ticker and number below as unverified.
+
+STRONGEST SECTORS:
+- **Technology services:** Strongly up. Dominated by large green tiles for **MSFT** (+2.38%), **GOOGL** (+0.97%), and **ORCL** (+4.21%).
+- **Retail trade:** Strongly up. Dominated by a massive green tile for **AMZN** (+3.29%) and **WMT** (+0.71%).
+- **Consumer durables:** Strongly up. Dominated by a large green tile for **TSLA** (+2.05%).
+- **Health technology:** Mildly up. Dominated by green tiles for **LLY** (+0.83%), **ABVX** (+1.49%), and **MRK** (+2.26%).
+- **Finance:** Mildly up. Dominated by green tiles for **V** (+2.76%), **MA** (+2.50%), and **BRK.B** (+0.89%).
+
+WEAKEST SECTORS:
+- **Electronic technology:** Mildly down. Dominated by large red tiles for **NVDA** (-0.52%), **AAPL** (-1.11%), and **AMD** (-2.03%).
+- **Energy minerals:** Mildly down. Dominated by red tiles for **XOM** (-0.26%) and **CVX** (-0.20%).
+
+NOTABLE TICKERS:
+- **NFLX** (-1.77%) and **CRWD** (+4.57%) are visible in the Technology services sector.
+- **PLTR** (-5.17%) is a notable red tile in Technology services.
+- **CAT** (+0.54%) is visible in Producer manufacturing.
+- **HD** (-1.60%) and **COST** (-0.11%) are visible in Retail trade.
+
+CONFIDENCE: high - The image is a clear, high-resolution screenshot of a TradingView heatmap with legible tickers and percentages.
+
+UNREADABLE:
+- Tickers and percentages inside the very small tiles in the bottom-right corner (e.g., within "Non-ener...", "Distributio...", "Commercial s...").
+- Specific tickers inside the tiny tiles in the "Utilities" and "Transportati..." sectors.
+
+3. VERIFIED MARKET DATA
+========================================================================
+Deterministic cross-check: SPDR sector ETF closes, no model involved.
+
+session(s) covered: 2026-10-09
+
+ #  sector                       last    5-day  1-month
+------------------------------------------------------------------------
+ 1  Real Estate                +1.86%   +1.96%   -3.34%
+ 2  Health Care                +1.58%   +2.79%   +3.11%
+ 3  Consumer Discretionary     +1.02%   +2.55%   +0.79%
+ 4  Financials                 +0.92%   +2.32%   -3.76%
+ 5  Utilities                  +0.83%   +3.97%   -2.61%
+ 6  Technology                 +0.51%   -0.52%   +7.32%
+ 7  Industrials                +0.50%   -0.41%   -0.76%
+ 8  Materials                  +0.32%   +1.17%   -2.62%
+ 9  Consumer Staples           +0.01%   +3.60%   +0.41%
+10  Energy                     -0.25%   +3.60%   +0.23%
+11  Communication Services     -1.51%   +0.05%   -1.00%
+
+ETF proxies, cap-weighted within each sector.
+
+4. FACT-CHECK OF THE MODEL'S OWN NUMBERS
+========================================================================
+Every TICKER (+x.xx%) the model stated in section 2, re-checked against
+real closes. Magnitudes are usually read accurately; the SIGN is where
+vision models fail, because it means telling red from green.
+
+ticker      claimed    actual   verdict
+------------------------------------------------------------------------
+MSFT         +2.38%    +2.38%   ok
+GOOGL        +0.97%    +0.97%   ok
+ORCL         +4.21%    +4.21%   ok
+AMZN         +3.29%    +3.29%   ok
+WMT          +0.71%    +0.71%   ok
+TSLA         +2.05%    +2.05%   ok
+LLY          +0.83%    +0.83%   ok
+ABVX         +1.49%    -1.01%   MISREAD (ticker or value)
+MRK          +2.26%    +2.26%   ok
+V            +2.76%    +2.76%   ok
+MA           +2.50%    +2.50%   ok
+BRK.B        +0.89%    +0.89%   ok
+NVDA         -0.52%    -0.52%   ok
+AAPL         -1.11%    -1.11%   ok
+AMD          -2.03%    -2.03%   ok
+XOM          -0.26%    +0.26%   SIGN FLIPPED (colour misread)
+CVX          -0.20%    +0.20%   SIGN FLIPPED (colour misread)
+NFLX         -1.77%    -1.77%   ok
+CRWD         +4.57%    +4.57%   ok
+PLTR         -5.17%    +5.17%   SIGN FLIPPED (colour misread)
+CAT          +0.54%    +0.54%   ok
+HD           -1.60%    -1.60%   ok
+COST         -0.11%    -0.11%   ok
+
+4 of 23 checked claims had the wrong sign.
+Treat every directional statement in section 2 as suspect.
+
+5. CAVEATS
+========================================================================
+- Section 2 is a language model reading a screenshot. Small tiles and
+  tiny text are exactly where such models hallucinate. It is a
+  qualitative read, never a source of numbers.
+- Section 3 is arithmetic on published closes, so it is exact -- but it
+  is ETF proxies, not TradingView's own tree map over individual stocks.
+- 'Last session' means the most recent completed session. Before the US
+  open, or on a weekend/holiday, that is the previous trading day.
+- Automated capture of a third-party site may conflict with its terms of
+  service. Check before running this on a schedule.
