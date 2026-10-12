@@ -3,11 +3,14 @@ setlocal
 title TV_Service - install Windows service
 
 rem ===========================================================================
-rem  Installs the TV_Service MCP server as an auto-starting Windows service.
+rem  Installs the TV_Service MCP server as a Windows service that starts at
 rem  Self-elevates: you will get a UAC prompt.
 rem
 rem  What it runs:
 rem    python D:\TV_Service\heatmap_mcp.py --http --port 8099
+rem
+rem  Starts at boot as Automatic (Delayed Start), so it waits for the rest of
+rem  the boot to settle instead of competing with it.
 rem
 rem  Safe to re-run: an existing tv_service is removed and reinstalled.
 rem ===========================================================================
@@ -59,7 +62,11 @@ if errorlevel 1 ( echo ERROR: nssm install failed & echo. & pause & exit /b 1 )
 "%NSSM%" set "%SVC%" AppDirectory "%APPDIR%"
 "%NSSM%" set "%SVC%" DisplayName "TV_Service (TradingView heat-map MCP)"
 "%NSSM%" set "%SVC%" Description "Model Context Protocol server for TradingView heat-map analysis. Serves Streamable HTTP on http://127.0.0.1:%PORT%/mcp and is part of the TV_Service project."
+rem Automatic, then flagged DELAYED. sc.exe sets the delayed flag because that
+rem is the native way to do it and works on any nssm version.
 "%NSSM%" set "%SVC%" Start SERVICE_AUTO_START
+sc config "%SVC%" start= delayed-auto >nul
+if errorlevel 1 echo WARNING: could not set the delayed flag - the service is plain Automatic.
 "%NSSM%" set "%SVC%" AppStdout "%LOGDIR%\service-stdout.log"
 "%NSSM%" set "%SVC%" AppStderr "%LOGDIR%\service-stderr.log"
 "%NSSM%" set "%SVC%" AppRotateFiles 1
@@ -75,6 +82,9 @@ echo Starting...
 timeout /t 4 /nobreak >nul
 "%NSSM%" status "%SVC%"
 
+echo Start type as Windows sees it:
+sc qc "%SVC%" | findstr /i "START_TYPE"
+
 echo.
 echo Verifying the endpoint...
 powershell -NoProfile -Command "$b='{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"install-check\",\"version\":\"1\"}}}'; try { $r=Invoke-WebRequest 'http://127.0.0.1:%PORT%/mcp' -Method POST -Body $b -ContentType 'application/json' -UseBasicParsing -TimeoutSec 15; Write-Host ('  OK  HTTP ' + $r.StatusCode); Write-Host ('  ' + $r.Content.Substring(0,[Math]::Min(150,$r.Content.Length))) } catch { Write-Host ('  endpoint not answering yet: ' + $_.Exception.Message); Write-Host '  check the log below' }"
@@ -85,7 +95,7 @@ powershell -NoProfile -Command "if (Test-Path '%LOGDIR%\service-stderr.log') { G
 
 echo.
 echo ============================================================
-echo   Done.  '%SVC%' is installed, set to start automatically.
+echo   Done.  '%SVC%' is installed as Automatic (Delayed Start).
 echo     endpoint : http://127.0.0.1:%PORT%/mcp
 echo     logs     : %LOGDIR%\service-stderr.log
 echo     status   : status-tv-service.bat

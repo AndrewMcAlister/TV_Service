@@ -29,7 +29,7 @@ if %errorlevel% neq 0 (
 echo --- service state ---
 powershell -NoProfile -Command "$s = Get-Service -Name '%SVC%'; Write-Host ('  name   : ' + $s.Name); Write-Host ('  status : ' + $s.Status); Write-Host ('  start  : ' + $s.StartType)"
 echo.
-sc qc "%SVC%" | findstr /i "BINARY_PATH_NAME SERVICE_START_NAME"
+sc qc "%SVC%" | findstr /i "START_TYPE BINARY_PATH_NAME SERVICE_START_NAME"
 
 echo.
 echo --- listening on %PORT% ---
