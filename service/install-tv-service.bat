@@ -62,11 +62,7 @@ if errorlevel 1 ( echo ERROR: nssm install failed & echo. & pause & exit /b 1 )
 "%NSSM%" set "%SVC%" AppDirectory "%APPDIR%"
 "%NSSM%" set "%SVC%" DisplayName "TV_Service (TradingView heat-map MCP)"
 "%NSSM%" set "%SVC%" Description "Model Context Protocol server for TradingView heat-map analysis. Serves Streamable HTTP on http://127.0.0.1:%PORT%/mcp and is part of the TV_Service project."
-rem Automatic, then flagged DELAYED. sc.exe sets the delayed flag because that
-rem is the native way to do it and works on any nssm version.
 "%NSSM%" set "%SVC%" Start SERVICE_AUTO_START
-sc config "%SVC%" start= delayed-auto >nul
-if errorlevel 1 echo WARNING: could not set the delayed flag - the service is plain Automatic.
 "%NSSM%" set "%SVC%" AppStdout "%LOGDIR%\service-stdout.log"
 "%NSSM%" set "%SVC%" AppStderr "%LOGDIR%\service-stderr.log"
 "%NSSM%" set "%SVC%" AppRotateFiles 1
@@ -82,8 +78,18 @@ echo Starting...
 timeout /t 4 /nobreak >nul
 "%NSSM%" status "%SVC%"
 
+rem ----------------------------------------------------------------------
+rem  The delayed flag is applied LAST, after every nssm set call. nssm
+rem  rewrites the service configuration when it sets a parameter, which
+rem  clears DelayedAutostart. Applied earlier it is silently lost.
+rem ----------------------------------------------------------------------
+echo Flagging the start as delayed...
+sc config "%SVC%" start= delayed-auto >nul
+if errorlevel 1 echo   WARNING: sc config failed - the service stays plain Automatic.
+
 echo Start type as Windows sees it:
 sc qc "%SVC%" | findstr /i "START_TYPE"
+powershell -NoProfile -Command "$v=(Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\%SVC%' -ErrorAction SilentlyContinue).DelayedAutostart; if ($v -eq 1) { Write-Host '  delayed flag: SET (1)' } else { Write-Host '  delayed flag: NOT SET - value is' $v }"
 
 echo.
 echo Verifying the endpoint...
