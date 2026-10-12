@@ -256,28 +256,43 @@ Report files are published as MCP resources at `heatmap://reports/<filename>`.
 **DeepSeek Harness**, stdio transport:
 
 ```yaml
-- id: mcp-tv-service
-  name: '@deepseek-ai/dsh-mcp-client'
-  config:
-    serverName: tv_service
-    transport: stdio
-    command: python
-    args: ['D:\TV_Service\heatmap_mcp.py']
-    toolCallTimeoutMs: 300000
+- insert:
+    - id: mcp-tv-service
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: tv_service
+        transport: stdio
+        command: python
+        args: ['D:\TV_Service\heatmap_mcp.py']
+        toolCallTimeoutMs: 300000
 ```
 
 **DeepSeek Harness**, against a long-running HTTP service:
 
 ```yaml
-- id: mcp-tv-service
-  name: '@deepseek-ai/dsh-mcp-client'
-  config:
-    serverName: tv_service
-    transport: streamable-http
-    url: http://127.0.0.1:8099/mcp
-    toolCallTimeoutMs: 300000
+- insert:
+    - id: mcp-tv-service
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: tv_service
+        transport: streamable-http
+        url: http://127.0.0.1:8099/mcp
+        toolCallTimeoutMs: 300000
 ```
 
+### A new plugin needs the `insert:` form
+
+`cordis.patch.yml` is a list of *patch* entries. A bare entry targets an
+**existing** entry id and only overrides its config, so adding a plugin that way
+fails at boot with:
+
+```
+patch: entry "mcp-tv-service" not found
+```
+
+Wrap new plugins in an `insert:` list, as above. The failure is silent in the
+running harness because `failOnStartupError` defaults to `false` — the tools
+simply never appear. `dsh --profile web --dump-config` prints any such error.
 ### The harness must be restarted
 
 Adding the entry above edits the profile's `cordis.patch.yml`, which is read when
