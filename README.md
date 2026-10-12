@@ -293,48 +293,35 @@ patch: entry "mcp-tv-service" not found
 Wrap new plugins in an `insert:` list, as above. The failure is silent in the
 running harness because `failOnStartupError` defaults to `false` — the tools
 simply never appear. `dsh --profile web --dump-config` prints any such error.
-### The harness must be restarted
+### Loading it
 
-Adding the entry above edits the profile's `cordis.patch.yml`, which is read when
-the harness composes its plugin tree at start-up. The `tv_service_*` tools
-therefore appear only once the harness is restarted; editing the file under a
-running harness has no effect until then. `failOnStartupError` defaults to
-`false`, so if the plugin cannot load the harness still starts and simply omits
-the tools rather than failing.
+Editing `cordis.patch.yml` takes effect either way, without needing you to force
+anything:
 
-Confirm it loaded by asking the agent to call `tv_service_probe_model_server`, or
-by running the server by hand:
+- **Live, while the harness runs.** DSH watches the profile and recomposes when
+  the patch changes. Observed directly: the six `tv_service_*` tools appeared
+  with the harness process PID unchanged, i.e. no restart.
+- **On the next start-up**, if the watcher is not running.
+
+A restart is the reliable fallback if the tools do not show up.
+
+`failOnStartupError` defaults to `false`, so a plugin that fails to load leaves
+the harness running and silently omits its tools. Check any suspicion with:
+
+```powershell
+cd D:\deepseek-harness
+node apps\cli\lib\bin.js --profile web --dump-config
+```
+
+That prints the composed tree and names a bad patch outright, for example
+`patch: entry "mcp-tv-service" not found`.
+
+Confirm it loaded by calling `tv_service_probe_model_server`, or by running the
+server by hand:
 
 ```powershell
 python D:\TV_Service\heatmap_mcp.py --list-tools
 ```
-### Raise the tool timeout
-
-DSH's `toolCallTimeoutMs` defaults to **60 seconds**. The full report takes
-20-40 s — it drives a browser *and* a large local model — so the default is
-uncomfortably close and will fail intermittently. Set it to `300000`.
-
-### Why stdout purity is load-bearing
-
-On the stdio transport stdout *is* the protocol channel. The pipeline prints
-progress, so every tool call runs with `sys.stdout` redirected to stderr while
-the protocol writer holds a private reference to the real stdout. One stray line
-on stdout and the client rejects the whole stream as malformed. The test suite
-asserts this explicitly.
-
-### Testing it
-
-```powershell
-python tests\mcp_stdio_test.py    # protocol over stdio
-python tests\mcp_http_test.py     # protocol over HTTP
-```
-
-Both drive the server through **file redirection rather than pipes**, because
-restricted environments forbid the pipes `subprocess` would otherwise open. They
-assert the handshake, tool and resource listing, a real tool call, stdout purity,
-and the error paths (`-32601` unknown method, `-32602` unknown tool, `400` for a
-malformed body).
-
 ## Two honest caveats
 
 - **Terms of service.** TradingView's site is not yours to scrape on a schedule.
