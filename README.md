@@ -245,9 +245,9 @@ Report files are published as MCP resources at `heatmap://reports/<filename>`.
 ```json
 {
   "mcpServers": {
-    "tv-heatmap": {
+    "tv-service": {
       "command": "python",
-      "args": ["D:\\TV_Market_Picture\\heatmap_mcp.py"]
+      "args": ["D:\\TV_Service\\heatmap_mcp.py"]
     }
   }
 }
@@ -256,23 +256,23 @@ Report files are published as MCP resources at `heatmap://reports/<filename>`.
 **DeepSeek Harness**, stdio transport:
 
 ```yaml
-- id: mcp-tv-heatmap
+- id: mcp-tv-service
   name: '@deepseek-ai/dsh-mcp-client'
   config:
-    serverName: tv_heatmap
+    serverName: tv_service
     transport: stdio
     command: python
-    args: ['D:\TV_Market_Picture\heatmap_mcp.py']
+    args: ['D:\TV_Service\heatmap_mcp.py']
     toolCallTimeoutMs: 300000
 ```
 
 **DeepSeek Harness**, against a long-running HTTP service:
 
 ```yaml
-- id: mcp-tv-heatmap
+- id: mcp-tv-service
   name: '@deepseek-ai/dsh-mcp-client'
   config:
-    serverName: tv_heatmap
+    serverName: tv_service
     transport: streamable-http
     url: http://127.0.0.1:8099/mcp
     toolCallTimeoutMs: 300000

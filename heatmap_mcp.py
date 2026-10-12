@@ -37,7 +37,7 @@ if str(HERE) not in sys.path:
 
 import heatmap_report as hr  # noqa: E402  (the pipeline this server exposes)
 
-SERVER_INFO = {"name": "tv-heatmap", "version": "1.0.0"}
+SERVER_INFO = {"name": "tv-service", "version": "1.0.0"}
 
 # Newest first. Initialization echoes the client's version when we support it.
 PROTOCOL_VERSIONS = ("2025-06-18", "2025-03-26", "2024-11-05")
@@ -681,7 +681,7 @@ def handle(request: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def serve_stdio() -> int:
-    _log(f"tv-heatmap MCP server on stdio (pid {os.getpid()})")
+    _log(f"tv-service MCP server on stdio (pid {os.getpid()})")
     for raw in sys.stdin:
         line = raw.strip()
         if not line:
@@ -708,11 +708,11 @@ def serve_stdio() -> int:
 def serve_http(host: str, port: int) -> int:
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-    session_id = "tv-heatmap"
+    session_id = "tv-service"
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
-        server_version = "tv-heatmap-mcp/1.0"
+        server_version = "tv-service-mcp/1.0"
 
         def log_message(self, fmt, *args):
             _log("http " + (fmt % args))
@@ -769,7 +769,7 @@ def serve_http(host: str, port: int) -> int:
             self._send(200, response)
 
     server = ThreadingHTTPServer((host, port), Handler)
-    _log(f"tv-heatmap MCP server on http://{host}:{port}/mcp")
+    _log(f"tv-service MCP server on http://{host}:{port}/mcp")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
