@@ -278,6 +278,21 @@ Report files are published as MCP resources at `heatmap://reports/<filename>`.
     toolCallTimeoutMs: 300000
 ```
 
+### The harness must be restarted
+
+Adding the entry above edits the profile's `cordis.patch.yml`, which is read when
+the harness composes its plugin tree at start-up. The `tv_service_*` tools
+therefore appear only once the harness is restarted; editing the file under a
+running harness has no effect until then. `failOnStartupError` defaults to
+`false`, so if the plugin cannot load the harness still starts and simply omits
+the tools rather than failing.
+
+Confirm it loaded by asking the agent to call `tv_service_probe_model_server`, or
+by running the server by hand:
+
+```powershell
+python D:\TV_Service\heatmap_mcp.py --list-tools
+```
 ### Raise the tool timeout
 
 DSH's `toolCallTimeoutMs` defaults to **60 seconds**. The full report takes
